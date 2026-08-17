@@ -1,0 +1,21 @@
+# gitops/apps/application-armazenamento.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lab-armazenamento
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/wandermaia/lab-crossplane-gitops.git
+    targetRevision: main
+    path: gitops/manifests
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
