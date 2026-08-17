@@ -1,0 +1,14 @@
+# crossplane/direct/bucket.yaml
+apiVersion: s3.aws.m.upbound.io/v1beta1
+kind: Bucket
+metadata:
+  name: lab-crossplane-bucket-direto
+  namespace: default
+  annotations:
+    crossplane.io/external-name: lab-crossplane-bucket-direto-wms
+spec:
+  forProvider:
+    region: us-east-1
+  providerConfigRef:
+    name: default
+    kind: ClusterProviderConfig
