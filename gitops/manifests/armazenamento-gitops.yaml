@@ -1,0 +1,10 @@
+# gitops/manifests/armazenamento-gitops.yaml
+apiVersion: plataforma.lab/v1alpha1
+kind: XArmazenamento
+metadata:
+  name: armazenamento-via-gitops
+  namespace: default
+spec:
+  parametros:
+    prefixoNome: lab-crossplane-argocd-wmns-gitops
+    ambiente: dev
