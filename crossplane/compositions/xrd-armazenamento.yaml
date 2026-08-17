@@ -1,0 +1,32 @@
+# crossplane/compositions/xrd-armazenamento.yaml
+apiVersion: apiextensions.crossplane.io/v2
+kind: CompositeResourceDefinition
+metadata:
+  name: xarmazenamentos.plataforma.lab
+spec:
+  scope: Namespaced
+  group: plataforma.lab
+  names:
+    kind: XArmazenamento
+    plural: xarmazenamentos
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                parametros:
+                  type: object
+                  properties:
+                    prefixoNome:
+                      type: string
+                    ambiente:
+                      type: string
+                      enum: ["dev", "staging", "prod"]
+              required:
+                - parametros

@@ -1,0 +1,61 @@
+# crossplane/compositions/composition-armazenamento-aws.yaml
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: armazenamento-aws
+spec:
+  compositeTypeRef:
+    apiVersion: plataforma.lab/v1alpha1
+    kind: XArmazenamento
+  mode: Pipeline
+  pipeline:
+    - step: patch-and-transform
+      functionRef:
+        name: function-patch-and-transform
+      input:
+        apiVersion: pt.fn.crossplane.io/v1beta1
+        kind: Resources
+        resources:
+          - name: bucket
+            base:
+              apiVersion: s3.aws.m.upbound.io/v1beta1
+              kind: Bucket
+              spec:
+                forProvider:
+                  region: us-east-1
+                providerConfigRef:
+                  name: default
+                  kind: ClusterProviderConfig
+            patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parametros.prefixoNome
+                toFieldPath: metadata.annotations[crossplane.io/external-name]
+                transforms:
+                  - type: string
+                    string:
+                      type: Format
+                      fmt: "%s-gitops-bucket"
+          - name: tabela
+            base:
+              apiVersion: dynamodb.aws.m.upbound.io/v1beta1
+              kind: Table
+              spec:
+                forProvider:
+                  region: us-east-1
+                  hashKey: id
+                  attribute:
+                    - name: id
+                      type: S
+                  billingMode: PAY_PER_REQUEST
+                providerConfigRef:
+                  name: default
+                  kind: ClusterProviderConfig
+            patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parametros.prefixoNome
+                toFieldPath: metadata.annotations[crossplane.io/external-name]
+                transforms:
+                  - type: string
+                    string:
+                      type: Format
+                      fmt: "%s-gitops-table"
